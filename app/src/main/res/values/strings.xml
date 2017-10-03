@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Pontaj SV</string>
+    <string name="pontajAddress">pontaj.computervoice.ro:5544</string>
+</resources>
