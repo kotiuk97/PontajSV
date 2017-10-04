@@ -1,4 +1,20 @@
 <resources>
     <string name="app_name">Pontaj SV</string>
-    <string name="pontajAddress">pontaj.computervoice.ro:5544</string>
+    <string name="insertCheckButtonText">Insert Check</string>
+    <string name="companyName">©triven</string>
+
+    <string-array name="list_of_users">
+        <item>Bitea Adrian</item>
+        <item>Gurita Ovidiu</item>
+        <item>Hreniuc Cristian</item>
+        <item>Hutuleac Danut</item>
+        <item>Julei Cezar</item>
+        <item>Kotyuk Serghei</item>
+        <item>Murarasu Liviu</item>
+        <item>Pamparau Cristian</item>
+        <item>Pamparau Sebastian</item>
+        <item>Schipor Ioan</item>
+        <item>Tabrea Alecsandru</item>
+    </string-array>
+
 </resources>
