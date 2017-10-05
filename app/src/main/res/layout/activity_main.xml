@@ -1,42 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.skotyuk.pontajsv.MainActivity"
     android:background="@drawable/background"
     android:orientation="vertical">
+
     <Spinner
         android:id="@+id/spinner_username"
         android:layout_width="match_parent"
         android:layout_height="70dp"
         android:textAlignment="center">
     </Spinner>
+
     <Button
+        android:id="@+id/buttonInsertCheck"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:onClick="insertCheck"
-        android:text="@string/insertCheckButtonText"
+        android:onClick="onClick"
+        android:text="@string/app_name"
         android:background="@color/colorButtonBackground"
         android:textColor="@color/colorTextBackground"
         android:layout_margin="15dp"
         />
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity=""
-        android:layout_margin="15dp">
-        <ImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:src="@drawable/logo"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="15dp"
-            android:text="@string/companyName"
-            android:layout_gravity="center"/>
 
-    </LinearLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="bottom|right"
+        android:layout_margin="15dp">
+
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/logo"/>
+
+    </RelativeLayout>
 
 </LinearLayout>

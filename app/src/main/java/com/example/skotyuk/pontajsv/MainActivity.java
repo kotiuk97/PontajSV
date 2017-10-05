@@ -1,11 +1,17 @@
 package com.example.skotyuk.pontajsv;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.ButtonBarLayout;
 import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -17,17 +23,36 @@ import java.net.URLConnection;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends AppCompatActivity {
 
 
     private  Spinner spinner;
+    private Button buttonCheck;
+    private DataBase dataBase;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        if (!isOnline()){
+            NoInternetDialogFragment dialog = new NoInternetDialogFragment();
+            dialog.show(getFragmentManager(),"noInternetDialog");
+        }
         initSpinner();
-        System.out.println("That didn't work!");
+        buttonCheck = (Button) findViewById(R.id.buttonInsertCheck);
+        dataBase = new DataBase(this);
+        int tmp = 0;
+        try {
+            tmp = dataBase.getNumberOfChecks(spinner.getSelectedItem().toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        setButtonText(tmp);
     }
 
     private void initSpinner() {
@@ -36,61 +61,51 @@ public class MainActivity extends AppCompatActivity {
                 R.array.list_of_users, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
-    }
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                try {
+                    int tmp = dataBase.getNumberOfChecks(spinner.getSelectedItem().toString());
+                    setButtonText(tmp);
 
-    public void insertCheck(View view) throws IOException {
-         WebView webView = new WebView(this);
-        webView.setWebViewClient(new WebViewClient());
-        webView.getSettings().setJavaScriptEnabled(true);
-        String url = createURLString(spinner.getSelectedItem().toString());
-     //   webView.loadUrl(url);
-        String name = spinner.getSelectedItem().toString();
-        getNumberOfChecks(name);
-        Toast.makeText(this, "Done!", Toast.LENGTH_SHORT).show();
-    }
-
-    private String getCurrentDate(){
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        Date date = new Date();
-
-        return dateFormat.format(date);
-    }
-    private String createURLString(String userName){
-        String firstName, lastName;
-        lastName = userName.split(" ")[0];
-        firstName = userName.split(" ")[1];
-
-        return "http://chreniuc:68S3PpmGaJfr6@pontaj.computervoice.ro:5544/files/evidenta_online.php?combo=" + lastName +"+" + firstName + "&checkday=on&data_combo=" + getCurrentDate() + "&insert_check=do+it!";
-    }
-
-    private void getNumberOfChecks(String userName) throws IOException {
-        String firstName, lastName;
-        lastName = userName.split(" ")[0];
-        firstName = userName.split(" ")[1];
-
-        URL url;
-        url = new URL("http://chreniuc:68S3PpmGaJfr6@pontaj.computervoice.ro:5544/files/evidenta.php?combo=Kotyuk+Serghei&checkday=on&data_combo=2017-10-04");
-     //   url = new URL("http://chreniuc:68S3PpmGaJfr6@pontaj.computervoice.ro:5544/files/evidenta.php?combo=" + lastName +"+" + firstName + "&checkday=on&data_combo=" + getCurrentDate());
-      //  url = new URL("http://pontaj.computervoice.ro:5544/files/evidenta.php?combo=" + lastName +"+" + firstName + "&checkday=on&data_combo=" + getCurrentDate());
-        String encoding = "Y2hyZW5pdWM6NjhTM1BwbUdhSmZyNg==";
-        URLConnection uc = url.openConnection();
-        uc.setRequestProperty("Authorization", String.format("Basic %s", encoding));
-        BufferedReader br = new BufferedReader(new InputStreamReader(uc.getInputStream()));
-
-        String inputLine;
-        int numberOfCheckIns = -1;
-        while ((inputLine = br.readLine()) != null) {
-            if (inputLine.contains("<table id=\"table\"")){
-                while (!(inputLine = br.readLine()).contains("</table>")){
-                    if (inputLine.contains("</tr>")){
-                        numberOfCheckIns++;
-                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
-                break;
             }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+    }
+
+    public boolean isOnline() {
+        ConnectivityManager cm =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnectedOrConnecting();
+    }
+
+
+    public void onClick(View view) throws IOException {
+     //   dataBase.insertCheck(spinner.getSelectedItem().toString());
+    }
+
+    private void setButtonText(int numberOfChecks){
+        Toast.makeText(this, String.valueOf(numberOfChecks), Toast.LENGTH_LONG).show();
+        if (numberOfChecks == 0 || numberOfChecks%2 == 0){
+            if (numberOfChecks == 2)
+                buttonCheck.setText(R.string.CheckOut);
+            else
+            buttonCheck.setText(R.string.CheckIn);
+        }else{
+            buttonCheck.setText(R.string.CheckOut);
         }
-        br.close();
-        Toast.makeText(this, "Number-" + String.valueOf(numberOfCheckIns), Toast.LENGTH_SHORT).show();
     }
 
 }
