@@ -10,16 +10,14 @@ import android.widget.Toast;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.StringTokenizer;
 import java.util.concurrent.ExecutionException;
-
-/**
- * Created by triven on 10/5/2017.
- */
 
 public class DataBase {
 
@@ -67,17 +65,27 @@ public class DataBase {
 
         URL url;
         url = new URL("http://" + DBAdminLoginPass + "@pontaj.computervoice.ro:5544/files/evidenta.php?combo=" + lastName + "+" + firstName + "&checkday=on&data_combo=" + getCurrentDate());
-        //   url = new URL("http://chreniuc:68S3PpmGaJfr6@pontaj.computervoice.ro:5544/files/evidenta.php?combo=" + lastName +"+" + firstName + "&checkday=on&data_combo=" + getCurrentDate());
-        //  url = new URL("http://pontaj.computervoice.ro:5544/files/evidenta.php?combo=" + lastName +"+" + firstName + "&checkday=on&data_combo=" + getCurrentDate());
 
-        MySocket socket = new MySocket();
+        EventsCounter socket = new EventsCounter();
         socket.execute(new URL[]{url});
         return  socket.get();
     }
 
-    class MySocket extends AsyncTask<URL, Void, Integer>{
+    public String getEventsHTMLTable(String userName) throws MalformedURLException, ExecutionException, InterruptedException {
+        String firstName, lastName;
+        lastName = userName.split(" ")[0];
+        firstName = userName.split(" ")[1];
 
-        int result = -1;
+        URL url;
+        url = new URL("http://" + DBAdminLoginPass + "@pontaj.computervoice.ro:5544/files/evidenta.php?combo=" + lastName + "+" + firstName + "&checkday=on&data_combo=" + getCurrentDate());
+        EventsTable events = new EventsTable();
+        events.execute(new URL[]{url});
+        return events.get();
+    }
+
+    class EventsCounter extends AsyncTask<URL, Void, Integer>{
+
+        int result = 0;
 
         @Override
         protected Integer doInBackground(URL... urls) {
@@ -100,8 +108,102 @@ public class DataBase {
             }catch (Exception e){
                 result = -1;
             }
-            return result;
+            if (result == 0)
+                return 0;
+            else
+                return result - 1;
         }
 
+    }
+
+    class EventsTable extends AsyncTask<URL, Void, String>{
+
+        boolean isHeaderRow = true;
+        boolean eventIn = true;
+        int columns = 0;
+        String result;
+        @Override
+        protected String doInBackground(URL... params) {
+            try{
+                URLConnection uc = params[0].openConnection();
+                uc.setRequestProperty("Authorization", String.format("Basic %s", DBAdminLoginPassEncoded));
+                BufferedReader br = new BufferedReader(new InputStreamReader(uc.getInputStream()));
+                String inputLine;
+
+                while ((inputLine = br.readLine()) != null) {
+                    if (inputLine.contains("<table id=\"table\"")){
+                        result = inputLine;
+                        while (!(inputLine = br.readLine()).contains("</table>")){
+
+                            //using it to display only first 2 columns
+                            if (inputLine.contains("<th>") || inputLine.contains("<td>")){
+                                columns++;
+
+                                // if it is first or second column, add it to result
+                                if (columns < 3)
+                                    result += inputLine;
+                                // at the end of the table row, set column count to 0
+                                if (columns == 7)
+                                    columns = 0;
+                            }else{
+
+                                // if it is table row, we use green color for InEvent, and red color for OutEvent
+                                if (inputLine.contains("<tr>") && !isHeaderRow){
+                                    if (eventIn){
+                                        inputLine = inputLine.replace("<tr","<tr style='color: green'");
+                                        eventIn = false;
+                                    }else{
+                                        inputLine = inputLine.replace("<tr","<tr style='color: red'");
+                                        eventIn = true;
+                                    }
+                                    result += inputLine;
+                                }else{
+                                    //after we found header row (first row in a table), set flag to false
+                                    if (inputLine.contains("<tr") && isHeaderRow)
+                                        isHeaderRow = false;
+                                    result +=inputLine;
+                                }
+                            }
+
+                        }
+
+                        // add close tag for the table
+                        result +=inputLine;
+
+                        //looking for a total time
+                        boolean totalTimeDiv = false;
+                        while ((inputLine = br.readLine()) != null){
+                            if (inputLine.contains("id = 'total_time'")){
+                                totalTimeDiv = true;
+                                result += "<br><br><br>";
+                            }
+                            if (totalTimeDiv){
+                                if (inputLine.contains("</div>")){
+                                    result += inputLine;
+                                    break;
+                                }else{
+                                    result += inputLine;
+                                }
+
+                            }
+
+                        }
+                        break;
+                    }
+                }
+            }catch (Exception e){
+                return "Oop...an error occur";
+            }
+
+            if (result == null || result.isEmpty())
+                return "There is no events today";
+            else{
+ //               result = result.replaceAll("\\s+","");
+                result = result.replace("Ora","Time");
+                return result;
+            }
+
+
+        }
     }
 }

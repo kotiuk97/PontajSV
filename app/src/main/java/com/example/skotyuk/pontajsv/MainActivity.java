@@ -1,6 +1,7 @@
 package com.example.skotyuk.pontajsv;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -27,6 +28,11 @@ import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends AppCompatActivity {
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setButtonText();
+    }
 
     private  Spinner spinner;
     private Button buttonCheck;
@@ -42,17 +48,9 @@ public class MainActivity extends AppCompatActivity {
         initSpinner();
         buttonCheck = (Button) findViewById(R.id.buttonInsertCheck);
         dataBase = new DataBase(this);
-        int tmp = 0;
-        try {
-            tmp = dataBase.getNumberOfChecks(spinner.getSelectedItem().toString());
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        setButtonText(tmp);
+
+        setButtonText();
+
     }
 
     private void initSpinner() {
@@ -64,17 +62,7 @@ public class MainActivity extends AppCompatActivity {
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                try {
-                    int tmp = dataBase.getNumberOfChecks(spinner.getSelectedItem().toString());
-                    setButtonText(tmp);
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+                    setButtonText();
             }
 
             @Override
@@ -93,19 +81,43 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void onClick(View view) throws IOException {
-     //   dataBase.insertCheck(spinner.getSelectedItem().toString());
+        switch (view.getId()){
+            case R.id.buttonInsertCheck:
+                dataBase.insertCheck(spinner.getSelectedItem().toString());
+                Toast.makeText(this, "Done.. See Events In/Out", Toast.LENGTH_LONG).show();
+                switchButtonText();
+                break;
+            case R.id.buttonEvents:
+                Intent intent = new Intent(this, EventsFragment.class);
+                intent.putExtra("USER_NAME", spinner.getSelectedItem().toString());
+                startActivity(intent);
+                break;
+        }
     }
 
-    private void setButtonText(int numberOfChecks){
-        Toast.makeText(this, String.valueOf(numberOfChecks), Toast.LENGTH_LONG).show();
+    private void setButtonText(){
+        int numberOfChecks = 0;
+        try {
+            numberOfChecks = dataBase.getNumberOfChecks(spinner.getSelectedItem().toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         if (numberOfChecks == 0 || numberOfChecks%2 == 0){
-            if (numberOfChecks == 2)
-                buttonCheck.setText(R.string.CheckOut);
+            buttonCheck.setText(R.string.CheckIn);
+  /*          if (numberOfChecks == 2)
+                buttonCheck.setText(R.string.CheckIn);
             else
             buttonCheck.setText(R.string.CheckIn);
-        }else{
+ */       }else{
             buttonCheck.setText(R.string.CheckOut);
         }
     }
 
+    private void switchButtonText(){
+        if (buttonCheck.getText().equals("Check Out"))
+            buttonCheck.setText("Check In");
+        else
+            buttonCheck.setText("Check Out");
+    }
 }

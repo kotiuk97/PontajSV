@@ -6,9 +6,9 @@
     <string name="no_internet_message">Oop.. there is no Internet connection on your phone. Connect to the Internet for continuation</string>
     <string name="wifi">Turn on wifi</string>
     <string name="quit">Quit</string>
+    <string name="events">Events In/Out</string>
 
     <string-array name="list_of_users">
-        <item>Bitea Adrian</item>
         <item>Gurita Ovidiu</item>
         <item>Hreniuc Cristian</item>
         <item>Hutuleac Danut</item>

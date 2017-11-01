@@ -6,11 +6,17 @@
     android:background="@drawable/background"
     android:orientation="vertical">
 
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:src="@drawable/pontaj_logo"/>
+
     <Spinner
         android:id="@+id/spinner_username"
         android:layout_width="match_parent"
         android:layout_height="70dp"
-        android:textAlignment="center">
+        android:textAlignment="center"
+        android:background="@color/colorTextBackground">
     </Spinner>
 
     <Button
@@ -22,6 +28,19 @@
         android:background="@color/colorButtonBackground"
         android:textColor="@color/colorTextBackground"
         android:layout_margin="15dp"
+        />
+
+    <Button
+        android:id="@+id/buttonEvents"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:onClick="onClick"
+        android:text="@string/events"
+        android:background="@color/colorTextBackground"
+        android:textColor="@color/colorLabelText"
+        android:layout_marginTop="5px"
+        android:layout_marginLeft="50px"
+        android:layout_marginRight="50px"
         />
 
     <RelativeLayout
