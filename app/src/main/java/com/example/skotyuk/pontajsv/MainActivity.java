@@ -2,29 +2,21 @@ package com.example.skotyuk.pontajsv;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.ButtonBarLayout;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.net.URLConnection;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -32,11 +24,15 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         setButtonText();
+        initDefaultUser();
     }
 
     private  Spinner spinner;
     private Button buttonCheck;
     private DataBase dataBase;
+    private Toolbar toolbar;
+    private SharedPreferences sharedPref;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,12 +41,33 @@ public class MainActivity extends AppCompatActivity {
             NoInternetDialogFragment dialog = new NoInternetDialogFragment();
             dialog.show(getFragmentManager(),"noInternetDialog");
         }
+        initToolBar();
         initSpinner();
+        sharedPref = getBaseContext().getSharedPreferences(Keys.SETTINGS, Context.MODE_PRIVATE);
+        initDefaultUser();
         buttonCheck = (Button) findViewById(R.id.buttonInsertCheck);
         dataBase = new DataBase(this);
 
         setButtonText();
 
+    }
+
+    private void initToolBar(){
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle(R.string.app_name);
+        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()){
+                    case R.id.settings:
+                        Intent intent = new Intent(getApplicationContext(), SettingsFragment.class);
+                        startActivity(intent);
+                        break;
+                }
+                return false;
+            }
+        });
+        toolbar.inflateMenu(R.menu.menu);
     }
 
     private void initSpinner() {
@@ -105,11 +122,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (numberOfChecks == 0 || numberOfChecks%2 == 0){
             buttonCheck.setText(R.string.CheckIn);
-  /*          if (numberOfChecks == 2)
-                buttonCheck.setText(R.string.CheckIn);
-            else
-            buttonCheck.setText(R.string.CheckIn);
- */       }else{
+       }else{
             buttonCheck.setText(R.string.CheckOut);
         }
     }
@@ -120,4 +133,18 @@ public class MainActivity extends AppCompatActivity {
         else
             buttonCheck.setText("Check Out");
     }
+
+    private void initDefaultUser() {
+        String username = sharedPref.getString(Keys.DEFAULT_USER_NAME, "");
+        if (username.equals(""))
+            return;
+
+        for(int i= 0; i < spinner.getAdapter().getCount(); i++){
+            if(spinner.getAdapter().getItem(i).toString().contains(username))
+            {
+                spinner.setSelection(i);
+            }
+        }
+    }
+
 }

@@ -7,12 +7,14 @@
     <string name="wifi">Turn on wifi</string>
     <string name="quit">Quit</string>
     <string name="events">Events In/Out</string>
+    <string name="settings">Settings</string>
 
     <string-array name="list_of_users">
         <item>Gurita Ovidiu</item>
         <item>Hreniuc Cristian</item>
         <item>Hutuleac Danut</item>
         <item>Julei Cezar</item>
+        <item>Duduman Alexandru</item>
         <item>Kotyuk Serghei</item>
         <item>Murarasu Liviu</item>
         <item>Pamparau Cristian</item>
