@@ -3,24 +3,36 @@
     <string name="CheckIn">Check In</string>
     <string name="CheckOut">Check Out</string>
     <string name="companyName">©triven</string>
-    <string name="no_internet_message">Oop.. there is no Internet connection on your phone. Connect to the Internet for continuation</string>
+    <string name="no_internet_message">Oops.. there is no Internet connection on your phone. Connect to the Internet for continuation</string>
     <string name="wifi">Turn on wifi</string>
     <string name="quit">Quit</string>
     <string name="events">Events In/Out</string>
     <string name="settings">Settings</string>
+    <string name="not_connected">Not connected</string>
+    <string name="connected">Connected</string>
 
     <string-array name="list_of_users">
         <item>Gurita Ovidiu</item>
+        <item>Kotyuk Serghei</item>
+        <item>Bitea Adrian</item>
         <item>Hreniuc Cristian</item>
         <item>Hutuleac Danut</item>
         <item>Julei Cezar</item>
         <item>Duduman Alexandru</item>
-        <item>Kotyuk Serghei</item>
-        <item>Murarasu Liviu</item>
+        <item>Dascalu Alexandru</item>
         <item>Pamparau Cristian</item>
         <item>Pamparau Sebastian</item>
         <item>Schipor Ioan</item>
         <item>Tabrea Alecsandru</item>
+        <item>Cucu Lorin</item>
+        <item>Balan Magdalena</item>
+        <item>Chiriac Alex</item>
+        <item>Cosovan David</item>
+        <item>Danci Florin</item>
+        <item>Gherasim David</item>
+        <item>Joroveanu Larisa</item>
+        <item>Maciuc Alexandru</item>
+        <item>Pavel Octavian</item>
     </string-array>
 
 </resources>

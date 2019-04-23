@@ -9,6 +9,15 @@
     <include android:id="@+id/toolbar"
         layout="@layout/toolbar"/>
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/connectionLabel"
+        android:text="@string/not_connected"
+        android:textAlignment="center"
+        android:textSize="20dp"
+        android:textColor="@color/colorRed"/>
+
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

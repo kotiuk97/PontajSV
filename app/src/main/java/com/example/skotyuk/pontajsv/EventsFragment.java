@@ -2,6 +2,7 @@ package com.example.skotyuk.pontajsv;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.webkit.WebView;
@@ -12,6 +13,9 @@ import java.util.concurrent.ExecutionException;
 
 
 public class EventsFragment extends Activity {
+
+
+    public static int EVENTS_FRAGMENT = 101;
 
     private String userName;
     private WebView webView;
@@ -38,4 +42,11 @@ public class EventsFragment extends Activity {
 
         webView.loadDataWithBaseURL(null, htmlReply, "text/html", "utf-8", null);
     }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        setResult(EVENTS_FRAGMENT);
+    }
+
 }

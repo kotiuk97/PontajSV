@@ -3,5 +3,7 @@
     <color name="colorTextBackground">#e3e1e4</color>
     <color name="colorButtonBackground">#905858</color>
     <color name="colorTitleBackground">#666666</color>
+    <color name="colorRed">#FF0000</color>
+    <color name="colorGreen">#32CD32</color>
     <color name="colorLabelText">#5583a9</color>
 </resources>

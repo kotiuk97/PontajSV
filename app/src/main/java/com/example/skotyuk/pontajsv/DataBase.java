@@ -2,10 +2,9 @@ package com.example.skotyuk.pontajsv;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.view.View;
+import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -16,7 +15,6 @@ import java.net.URLConnection;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.StringTokenizer;
 import java.util.concurrent.ExecutionException;
 
 public class DataBase {
@@ -56,6 +54,15 @@ public class DataBase {
     public void insertCheck(String userName) throws IOException {
         String url = getURLCheckRequest(userName);
         webView.loadUrl(url);
+    }
+
+    public void setWebChromeClient(WebViewClient webViewClient){
+        webView.setWebViewClient(webViewClient);
+    }
+
+    public int getInsertCheckProgress(){
+        int progr = webView.getProgress();
+        return progr;
     }
 
     public int getNumberOfChecks(String userName) throws IOException, ExecutionException, InterruptedException {
